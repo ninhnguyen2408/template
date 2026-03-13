@@ -126,7 +126,7 @@ public class WebUI {
             ExtentTestManager.logMessage(Status.INFO, "Click on element " + by);
       }
 
-      // Click element  với seconds là giá trị thay đổi
+      // Click element  với seconds là giá trị thay đổi import org.testng.Assert;
       @Step("Click on element {0} with timeout {1}")
       public static void clickElement(By by, int seconds) {
             waitForElementClickable(by, seconds);

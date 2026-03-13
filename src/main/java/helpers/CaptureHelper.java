@@ -24,13 +24,11 @@ public class CaptureHelper extends ScreenRecorder {
       public static ScreenRecorder screenRecorder;
       public String name;
 
-      //Hàm xây dựng
       public CaptureHelper(GraphicsConfiguration cfg, Rectangle captureArea, Format fileFormat, Format screenFormat, Format mouseFormat, Format audioFormat, File movieFolder, String name) throws IOException, AWTException {
             super(cfg, captureArea, fileFormat, screenFormat, mouseFormat, audioFormat, movieFolder);
             this.name = name;
       }
 
-      //Hàm này bắt buộc để ghi đè custom lại hàm trong thư viên viết sẵn
       @Override
       protected File createMovieFile(Format fileFormat) throws IOException {
 
@@ -45,7 +43,10 @@ public class CaptureHelper extends ScreenRecorder {
 
       // Start record video
       public static void startRecord(String recordName) {
-            //Tạo thư mục để lưu file video vào
+            if (screenRecorder != null) {
+                  stopRecord();
+            }
+
             File file = new File(SystemHelper.getCurrentDir() + PropertiesHelper.getValue("VIDEO_RECORD_PATH"));
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             int width = screenSize.width;
@@ -66,29 +67,29 @@ public class CaptureHelper extends ScreenRecorder {
 
       // Stop record video
       public static void stopRecord() {
+            if (screenRecorder == null) {
+                  return;
+            }
             try {
                   screenRecorder.stop();
             } catch (IOException e) {
                   throw new RuntimeException(e);
+            } finally {
+                  screenRecorder = null;
             }
       }
 
 
-      //Tạo format ngày giờ để xíu gắn dô cái name của screenshot hoặc record video không bị trùng tên (không bị ghi đè file)
-      private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+      private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
 
       public static void captureScreenshot(String screenshotName) {
             try {
-                  // Tạo tham chiếu đối tượng của TakesScreenshot với dirver hiện tại
                   TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver();
-                  // Gọi hàm getScreenshotAs để chuyển hóa hình ảnh về dạng FILE
                   File source = ts.getScreenshotAs(OutputType.FILE);
-                  //Kiểm tra folder nếu không tồn tại thì tạo folder
                   File theDir = new File(SystemHelper.getCurrentDir() + PropertiesHelper.getValue("SCREENSHOT_PATH"));
                   if (!theDir.exists()) {
                         theDir.mkdirs();
                   }
-                  // Chổ này đặt tên thì truyền biến "screenName" gán cho tên File chụp màn hình
                   FileHandler.copy(source, new File(SystemHelper.getCurrentDir() + PropertiesHelper.getValue("SCREENSHOT_PATH") + File.separator + screenshotName + "_" + dateFormat.format(new Date()) + ".png"));
                   System.out.println("Screenshot taken: " + screenshotName);
                   System.out.println("Screenshot taken current URL: " + DriverManager.getDriver().getCurrentUrl());
@@ -98,21 +99,17 @@ public class CaptureHelper extends ScreenRecorder {
       }
 
       public static void takeScreenshot(String screenshotName) {
-            // Tạo tham chiếu của TakesScreenshot
             TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver();
-            // Gọi hàm để chụp ảnh màn hình - getScreenshotAs
             File source = ts.getScreenshotAs(OutputType.FILE);
-            // Kiểm tra folder tồn tại. Nếu không thì tạo mới folder theo đường dẫn
             File theDir = new File(SystemHelper.getCurrentDir() + PropertiesHelper.getValue("SCREENSHOT_PATH"));
             if (!theDir.exists()) {
-                  theDir.mkdirs(); //Tạo mới thư mục
+                  theDir.mkdirs();
             }
-            // Lưu file ảnh với tên cụ thể vào đường dẫn
             try {
                   FileHandler.copy(source, new File(SystemHelper.getCurrentDir() + PropertiesHelper.getValue("SCREENSHOT_PATH") + screenshotName + ".png"));
-                  System.out.println("˙✧˖°\uD83D\uDCF7 ༘ ⋆｡˚  Take screenshot " + screenshotName + " successfully.");
+                  System.out.println("Take screenshot " + screenshotName + " successfully.");
             } catch (IOException e) {
-                  System.out.println("ERROR. Can not Take screenshot " + screenshotName + "❌");
+                  System.out.println("ERROR. Can not take screenshot " + screenshotName);
                   e.printStackTrace();
             }
       }
