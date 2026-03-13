@@ -46,21 +46,21 @@ public class ProductTest extends BaseTest {
       public void testAddProduct_withUnitNull() {
             navigate();
             productPage = new ProductPage();
-            productPage.addProductNullProductName();
+            productPage.addProductNullUnit();
       }
 
       @Test(description = "Add product failed, Required field: Unit price is NULL ")
       public void testAddProduct_withUnitPriceNull() {
             navigate();
             productPage = new ProductPage();
-            productPage.addProductNullProductName();
+            productPage.addProductNullUnitPrice();
       }
 
       @Test(description = "Add product failed, Required field: Discount is NULL ")
       public void testAddProduct_withDiscountNull() {
             navigate();
             productPage = new ProductPage();
-            productPage.addProductNullProductName();
+            productPage.addProductNullUnitDiscount();
       }
 
       @Test()

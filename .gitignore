@@ -43,3 +43,11 @@ out/
 report/
 logs/
 *.log
+
+/target/
+/allure-results/
+/allure-report/
+/report/
+/logs/
+.idea/
+.vscode/

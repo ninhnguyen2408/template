@@ -3,7 +3,6 @@ package listeners;
 import com.aventstack.extentreports.Status;
 import helpers.CaptureHelper;
 import helpers.PropertiesHelper;
-import keywords.WebUI;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -24,90 +23,85 @@ public class TestListener implements ITestListener {
       @Override
       public void onStart(ITestContext result) {
             PropertiesHelper.loadAllFiles();
-
-            if (PropertiesHelper.getValue("VIDEO_RECORD").equals("on")) {
-                  CaptureHelper.startRecord(result.getName());
-            }
       }
 
       @Override
       public void onFinish(ITestContext result) {
-            //Kết thúc và thực thi Extents Report
+            // End and flush Extent report once per test context
             ExtentReportManager.getExtentReports().flush();
-
-            if (PropertiesHelper.getValue("VIDEO_RECORD").equals("on")) {
-                  WebUI.sleep(1);
-                  CaptureHelper.stopRecord();
-            }
       }
 
       @Override
       public void onTestStart(ITestResult result) {
-            LogUtils.info("\uD83C\uDF38 \uD83C\uDF38 \uD83C\uDF38 \uD83C\uDF38 " + result.getName() + " \uD83D\uDCDD");
+            LogUtils.info("Test start: " + result.getName());
 
-            if (PropertiesHelper.getValue("VIDEO_RECORD").equals("on")) {
+            if (isVideoRecordEnabled()) {
                   CaptureHelper.startRecord(result.getName());
             }
 
-            //Bắt đầu ghi 1 TCs mới vào Extent Report
+            // Start a new test item in Extent report
             ExtentTestManager.saveToReport(getTestName(result), getTestDescription(result));
       }
 
       @Override
       public void onTestSuccess(ITestResult result) {
-            LogUtils.info("   ➡\uFE0F  " + result.getName() + " is successfully ✔\uFE0F"); //""
+            LogUtils.info(result.getName() + " is successfully");
 
-            if (PropertiesHelper.getValue("SCREENSHOT_PASS").equals("on")) {
+            if ("on".equalsIgnoreCase(PropertiesHelper.getValue("SCREENSHOT_PASS"))) {
                   CaptureHelper.takeScreenshot(result.getName());
             }
 
-            if (PropertiesHelper.getValue("VIDEO_RECORD").equals("on")) {
-                  WebUI.sleep(1);
-                  CaptureHelper.stopRecord();
-            }
+            stopRecordIfEnabled();
 
-            //Extent Report
-            ExtentTestManager.logMessage(Status.PASS, result.getName() + " is passed ✔\uFE0F");
+            // Extent report
+            ExtentTestManager.logMessage(Status.PASS, result.getName() + " is passed");
       }
 
       @Override
       public void onTestFailure(ITestResult result) {
-            LogUtils.error("  ➡\uFE0F  " + result.getName() + " is FAIL ❌");
+            LogUtils.error(result.getName() + " is FAIL");
 
-            if (PropertiesHelper.getValue("SCREENSHOT_FAIL").equals("on")) {
+            if ("on".equalsIgnoreCase(PropertiesHelper.getValue("SCREENSHOT_FAIL"))) {
                   CaptureHelper.takeScreenshot(result.getName());
             }
 
-            if (PropertiesHelper.getValue("VIDEO_RECORD").equals("on")) {
-                  WebUI.sleep(1);
-                  CaptureHelper.stopRecord();
-            }
+            stopRecordIfEnabled();
 
-            //Extent Report
-            ExtentTestManager.addScreenShot(result.getName());  //add hình
-            ExtentTestManager.logMessage(Status.FAIL, result.getThrowable().toString());    // xuất ra lý do lỗi
-            ExtentTestManager.logMessage(Status.FAIL, result.getName() + " is failed ❌");    // kết luận testcase fail
+            // Extent report
+            ExtentTestManager.addScreenShot(result.getName());
+            ExtentTestManager.logMessage(Status.FAIL, result.getThrowable().toString());
+            ExtentTestManager.logMessage(Status.FAIL, result.getName() + " is failed");
 
-            //Allure Report
-//        AllureManager.saveTextLog(result.getName() + " is failed.");
+            // Allure report
             AllureManager.saveScreenshotPNG();
       }
 
       @Override
       public void onTestSkipped(ITestResult result) {
-            LogUtils.warn("⚠\uFE0F ⚠\uFE0F ⚠\uFE0F " + result.getName() + " is SKIPPED ❗❗❗❗");
+            LogUtils.warn(result.getName() + " is SKIPPED");
 
-            if (PropertiesHelper.getValue("VIDEO_RECORD").equals("on")) {
-                  WebUI.sleep(1);
-                  CaptureHelper.stopRecord();
+            stopRecordIfEnabled();
+
+            // Extent report
+            if (result.getThrowable() != null) {
+                  ExtentTestManager.logMessage(Status.SKIP, result.getThrowable().toString());
+            } else {
+                  ExtentTestManager.logMessage(Status.SKIP, result.getName() + " is skipped");
             }
-
-            //Extent Report
-            ExtentTestManager.logMessage(Status.SKIP, result.getThrowable().toString());
       }
 
       @Override
       public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
             LogUtils.info("onTestFailedButWithinSuccessPercentage: " + result.getName());
+      }
+
+      private boolean isVideoRecordEnabled() {
+            return "on".equalsIgnoreCase(PropertiesHelper.getValue("VIDEO_RECORD"));
+      }
+
+      private void stopRecordIfEnabled() {
+            if (isVideoRecordEnabled()) {
+                  CaptureHelper.stopRecord();
+            }
       }
 }
