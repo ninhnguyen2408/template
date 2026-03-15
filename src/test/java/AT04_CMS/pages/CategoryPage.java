@@ -29,7 +29,8 @@ public class CategoryPage {
       private By inputMetaTitle = By.xpath("//input[@placeholder='Meta Title']");
       private By inputMetaDescription = By.xpath("//textarea[@name='meta_description']");
       private By dropdownFilteringAttributes = By.xpath("//div[contains(text(),'Nothing selected')]");
-      private By searchFilteringAttributes = By.xpath("//div[@class='dropdown-menu show']//input[@aria-label='Search']");
+      private By searchFilteringAttributes = By
+                  .xpath("//div[@class='dropdown-menu show']//input[@aria-label='Search']");
       private By buttonSave = By.xpath("//button[normalize-space()='Save']");
       private By alertMessage = By.xpath("//div[@role='alert']");
 
@@ -49,8 +50,10 @@ public class CategoryPage {
       }
 
       private void verifyCategoryPage() {
-            Assert.assertTrue(WebUI.checkElementDisplayed(buttonAddNewCategory), "Button Add new category is NOT displayed");
-            Assert.assertTrue(DriverManager.getDriver().getCurrentUrl().contains("categories"), "NOT to the Category page");
+            Assert.assertTrue(WebUI.checkElementDisplayed(buttonAddNewCategory),
+                        "Button Add new category is NOT displayed");
+            Assert.assertTrue(DriverManager.getDriver().getCurrentUrl().contains("categories"),
+                        "NOT to the Category page");
       }
 
       public void addNewCategory(String categoryName) {
@@ -59,12 +62,13 @@ public class CategoryPage {
             clickElement(buttonAddNewCategory);
             waitForPageLoaded();
             sendKeys(inputName, categoryName);
-            selectDynamicDropdown(listParentCategory, searchParentCategory, excelHelper.getCellData(2, 2)); //Parent Category
-            sendKeys(inputOrderingNumber, excelHelper.getCellData(2, 3)); //Ordering Number
+            selectDynamicDropdown(listParentCategory, searchParentCategory, excelHelper.getCellData(2, 2)); // Parent
+                                                                                                            // Category
+            sendKeys(inputOrderingNumber, excelHelper.getCellData(2, 3)); // Ordering Number
             selectStaticDropdown(dropdownType, excelHelper.getCellData(2, 4));
             getImage(browseBanner, searchImage, excelHelper.getCellData(2, 5), image, buttonAddFiles);
             getImage(browseIcon, searchImage, excelHelper.getCellData(2, 5), image, buttonAddFiles);
-            sendKeys(inputMetaTitle, excelHelper.getCellData(2, 6));    //Meta Title
+            sendKeys(inputMetaTitle, excelHelper.getCellData(2, 6)); // Meta Title
             sendKeys(inputMetaDescription, excelHelper.getCellData(2, 7));
             clickElement(dropdownFilteringAttributes);
             setTextAndKeys(searchFilteringAttributes, excelHelper.getCellData(2, 8), Keys.ENTER);
@@ -74,41 +78,47 @@ public class CategoryPage {
       public void verifyNameRequiredField() {
             setFileExcel();
             WebUI.verifyHTML5RequiredField(inputName);
-            WebUI.assertEquals(WebUI.getHTML5MessageField(inputName), excelHelper.getCellData(6, 1), "Validation HTML5 message Name not match");
+            WebUI.assertEquals(WebUI.getHTML5MessageField(inputName), excelHelper.getCellData(6, 1),
+                        "Validation HTML5 message Name not match");
       }
 
       public void verifyAddCategorySuccess() {
             setFileExcel();
-            Assert.assertTrue(WebUI.getWebElement(alertMessage).isDisplayed(), "Alert message add category successful is NOT displayed");
-            WebUI.assertEquals(WebUI.getTextElement(alertMessage), excelHelper.getCellData(6, 2), "Content of alert message add category successful not match");
+            Assert.assertTrue(WebUI.getWebElement(alertMessage).isDisplayed(),
+                        "Alert message add category successful is NOT displayed");
+            WebUI.assertEquals(WebUI.getTextElement(alertMessage), excelHelper.getCellData(6, 2),
+                        "Content of alert message add category successful not match");
       }
 
       private void searchCategoryName() {
             setFileExcel();
             WebUI.setTextAndKeys(searchCategoryName, excelHelper.getCellData(2, 1), Keys.ENTER);
             WebUI.waitForPageLoaded();
-//        WebUI.sleep(2);
+            // WebUI.sleep(2);
       }
 
       public void searchCategoryName(String searchText) {
             WebUI.setTextAndKeysENTER(searchCategoryName, searchText);
             WebUI.waitForPageLoaded();
-            WebUI.sleep(2);
+            WebUI.waitForElementVisible(listCategoryName);
       }
 
       public void verifyCategoryDetail() {
             setFileExcel();
-            WebUI.sleep(2);
-            WebUI.assertEquals(WebUI.getAttributeElement(inputName, "value"), excelHelper.getCellData(2, 1), "FAIL, incorrect Name value");
-            WebUI.assertEquals(WebUI.getAttributeElement(inputOrderingNumber, "value"), excelHelper.getCellData(2, 9), "FAIL, incorrect Ordering Number value");
-            WebUI.sleep(2);
-            WebUI.assertEquals(WebUI.getAttributeElement(inputMetaTitle, "value"), excelHelper.getCellData(2, 6), "FAIL, incorrect MetaTitle value");
-            WebUI.assertEquals(WebUI.getAttributeElement(inputMetaDescription, "value"), excelHelper.getCellData(2, 7), "FAIL, incorrect Meta Description value");
+            WebUI.waitForPageLoaded();
+            WebUI.assertEquals(WebUI.getAttributeElement(inputName, "value"), excelHelper.getCellData(2, 1),
+                        "FAIL, incorrect Name value");
+            WebUI.assertEquals(WebUI.getAttributeElement(inputOrderingNumber, "value"), excelHelper.getCellData(2, 9),
+                        "FAIL, incorrect Ordering Number value");
+            WebUI.assertEquals(WebUI.getAttributeElement(inputMetaTitle, "value"), excelHelper.getCellData(2, 6),
+                        "FAIL, incorrect MetaTitle value");
+            WebUI.assertEquals(WebUI.getAttributeElement(inputMetaDescription, "value"), excelHelper.getCellData(2, 7),
+                        "FAIL, incorrect Meta Description value");
       }
 
       public void getFirstCategoryName() {
             searchCategoryName();
-            WebUI.sleep(2);
+            WebUI.waitForElementVisible(listCategoryName);
             List<WebElement> listName = WebUI.getWebElements(listCategoryName);
             for (WebElement element : listName.subList(0, 1)) {
                   System.out.println("Name: " + element.getText());
@@ -119,13 +129,14 @@ public class CategoryPage {
             waitForPageLoaded();
             setFileExcel();
             searchCategoryName();
+            WebUI.waitForElementVisible(editCategory);
             WebUI.clickElement(editCategory);
             WebUI.clearAndSendKeys(inputOrderingNumber, excelHelper.getCellData(2, 9));
-            WebUI.sleep(4);
             WebUI.clickElement(buttonSave);
-            WebUI.sleep(2);
-            Assert.assertTrue(WebUI.checkElementDisplayed(alertUpdateSuccess), "Alert update successful is NOT displayed");
-            WebUI.assertEquals(WebUI.getTextElement(alertUpdateSuccess), excelHelper.getCellData(6, 3), "Content of alert Update success NOT match ");
+            Assert.assertTrue(WebUI.checkElementDisplayed(alertUpdateSuccess),
+                        "Alert update successful is NOT displayed");
+            WebUI.assertEquals(WebUI.getTextElement(alertUpdateSuccess), excelHelper.getCellData(6, 3),
+                        "Content of alert Update success NOT match ");
       }
 
       public void verifyDeleteCategory() {
@@ -133,28 +144,32 @@ public class CategoryPage {
             setFileExcel();
             searchCategoryName();
             WebUI.clickElement(deleteName);
-            Assert.assertTrue(WebUI.checkElementDisplayed(dialogDeleteConfirmation), "Delete confirmation dialog is not displayed");
-            Assert.assertTrue(WebUI.checkElementEnable(buttonDelete), "Button Delete is NOT enabled, Can NOT delete item");
+            Assert.assertTrue(WebUI.checkElementDisplayed(dialogDeleteConfirmation),
+                        "Delete confirmation dialog is not displayed");
+            Assert.assertTrue(WebUI.checkElementEnable(buttonDelete),
+                        "Button Delete is NOT enabled, Can NOT delete item");
             WebUI.clickElement(buttonDelete);
             waitForPageLoaded();
-            Assert.assertTrue(WebUI.checkElementDisplayed(messageDeleteSuccess), "Alert message Delete sucess is NOT displayed");
-            sleep(2);
-            WebUI.assertEquals(WebUI.getWebElement(messageDeleteSuccess).getText(), excelHelper.getCellData(6, 4), "Content of message Delete sucess NOT match ");
+            Assert.assertTrue(WebUI.checkElementDisplayed(messageDeleteSuccess),
+                        "Alert message Delete sucess is NOT displayed");
+            WebUI.assertEquals(WebUI.getWebElement(messageDeleteSuccess).getText(), excelHelper.getCellData(6, 4),
+                        "Content of message Delete sucess NOT match ");
       }
 
       private By listPage = By.xpath("//a[@class='page-link']");
 
       public void Pagination(String value) {
             // Lấy tổng số page
+            WebUI.waitForPageLoaded();
             int getListPage = WebUI.getWebElements(listPage).size();
-            WebUI.sleep(2);
 
             if (getListPage == 0) {
                   WebUI.checkContainsValueOnTableByColumn(2, value);
                   WebUI.logConsole("Number of results page lists displayed: " + (getListPage + 1));
             } else {
                   WebUI.logConsole("Number of results page lists displayed: " + getListPage);
-                  String pageTotal = DriverManager.getDriver().findElement(By.xpath("(//a[@class='page-link'])[" + (getListPage - 1) + "]")).getText();
+                  String pageTotal = DriverManager.getDriver()
+                              .findElement(By.xpath("(//a[@class='page-link'])[" + (getListPage - 1) + "]")).getText();
                   WebUI.logConsole("Total pages: " + pageTotal);
                   int tongPage = Integer.parseInt(pageTotal);
 
@@ -162,10 +177,10 @@ public class CategoryPage {
                         WebUI.logConsole("\n Page" + i + ":");
                         WebUI.checkContainsValueOnTableByColumn(2, value);
 
-                        //Nhấn nút Next để đến trang tiếp theo
+                        // Nhấn nút Next để đến trang tiếp theo
                         if (i < tongPage) {
                               WebUI.clickElement(By.xpath("//a[contains(text(),'›')]"));
-                              WebUI.sleep(2);
+                              WebUI.waitForPageLoaded();
                         }
                   }
             }

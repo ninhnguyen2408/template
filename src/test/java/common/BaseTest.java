@@ -10,19 +10,21 @@ import org.testng.annotations.*;
 
 @Listeners(TestListener.class)
 public class BaseTest {
-      
-      @BeforeMethod
-      @Parameters({"BROWSER"})
-      public void createDriver(@Optional("chrome") String browserName) {
-            WebDriver driver = setupBrowser(browserName);   //khởi tạo loại browser và gán vào driver
-//        WebDriver driver = setupBrowser(PropertiesHelper.getValue("browser"));
 
-            DriverManager.setDriver(driver);    // mang giá trị driver đã khởi tạo vào trong ThreadLocal
+      @BeforeMethod
+      @Parameters({ "BROWSER" })
+      public void createDriver(@Optional("chrome") String browserName) {
+            WebDriver driver = setupBrowser(browserName);
+            // khởi tạo loại browser và gán vào driver
+            // WebDriver driver = setupBrowser(PropertiesHelper.getValue("browser"));
+
+            DriverManager.setDriver(driver); // mang giá trị driver đã khởi tạo vào trong ThreadLocal
       }
 
-      //Viết hàm trung gian để lựa chọn Browser cần chạy với giá trị tham số "browser" bên trên truyền vào
+      // Viết hàm trung gian để lựa chọn Browser cần chạy với giá trị tham số
+      // "browser" bên trên truyền vào
       public WebDriver setupBrowser(String browserName) {
-            WebDriver driver ;
+            WebDriver driver;
             switch (browserName.trim().toLowerCase()) {
                   case "chrome":
                         driver = initChromeDriver();
@@ -34,7 +36,8 @@ public class BaseTest {
                         driver = initEdgeDriver();
                         break;
                   default:
-                        System.out.println("Browser: " + browserName + " is invalid, Launching Chrome as browser of choice...");
+                        System.out.println("Browser: " + browserName
+                                    + " is invalid, Launching Chrome as browser of choice...");
                         driver = initChromeDriver();
             }
             return driver;
@@ -68,9 +71,8 @@ public class BaseTest {
       @AfterMethod
       public void closeDriver() {
 
-            //Screenshot and Record video in TestListener
+            // Screenshot and Record video in TestListener
             DriverManager.quit();
       }
 
 }
-

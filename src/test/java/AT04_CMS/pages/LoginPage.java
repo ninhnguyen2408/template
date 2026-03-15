@@ -4,7 +4,6 @@ import constants.ConfigData;
 import drivers.DriverManager;
 import keywords.WebUI;
 import org.openqa.selenium.By;
-import org.testng.Assert;
 
 public class LoginPage {
 
@@ -14,14 +13,14 @@ public class LoginPage {
       private By buttonLogin = By.xpath("//button[normalize-space()='Login']");
       private By alertMessage = By.xpath("//div[@role='alert']");
 
-      private void getBrownser() {
+      private void getBrowser() {
             WebUI.openURL(ConfigData.URL);
             WebUI.waitForPageLoaded();
             WebUI.assertEquals(WebUI.getTextElement(headerPage), "Login to your account.", "NOT the Login page");
       }
 
       public DashboardPage loginCMS(String email, String password) {
-            getBrownser();
+            getBrowser();
             WebUI.sendKeys(inputEmail, email);
             WebUI.sendKeys(inputPassword, password);
             WebUI.clickElement(buttonLogin);
@@ -30,41 +29,39 @@ public class LoginPage {
       }
 
       public DashboardPage loginCMS() {
-            getBrownser();
+            getBrowser();
             WebUI.sendKeys(inputEmail, ConfigData.Email);
             WebUI.sendKeys(inputPassword, ConfigData.Password);
             WebUI.clickElement(buttonLogin);
             WebUI.waitForPageLoaded();
-            verifyLoginSucess();
             return new DashboardPage();
       }
 
-      public void verifyNullEmail() {
-            Assert.assertTrue(WebUI.verifyHTML5RequiredField(inputEmail), "Email is NOT a required field");
-            WebUI.assertEquals(WebUI.getHTML5MessageField(inputEmail), "Please fill out this field.", "Validation message of Email not match");
-            WebUI.sleep(2);
+      public boolean isEmailFieldRequired() {
+            return WebUI.verifyHTML5RequiredField(inputEmail);
       }
 
-      public void verifyNullPassword() {
-            Assert.assertTrue(WebUI.verifyHTML5RequiredField(inputPassword), "Password  is NOT a required field");
-            WebUI.assertEquals(WebUI.getHTML5MessageField(inputPassword), "Please fill out this field.", "Validation message of Password not match");
-            WebUI.sleep(2);
+      public String getEmailValidationMessage() {
+            return WebUI.getHTML5MessageField(inputEmail);
       }
 
-      public void incorrectFormatEmail() {
-            Assert.assertTrue(WebUI.verifyHTML5RequiredField(inputEmail), "Validation message of incorrect format Email NOT exists");
-            WebUI.assertEquals(WebUI.getHTML5MessageField(inputEmail), "Please include an '@' in the email address. 'abc' is missing an '@'.", "Validation message of incorrect format Email not match");
-            WebUI.sleep(2);
+      public boolean isPasswordFieldRequired() {
+            return WebUI.verifyHTML5RequiredField(inputPassword);
       }
 
-      private void verifyLoginSucess() {
-            Assert.assertFalse(DriverManager.getDriver().getCurrentUrl().contains("login"), "Login fail");
+      public String getPasswordValidationMessage() {
+            return WebUI.getHTML5MessageField(inputPassword);
       }
 
-      public void verifyLoginFail() {
-            WebUI.checkElementDisplayed(alertMessage);
-            Assert.assertTrue(DriverManager.getDriver().getCurrentUrl().contains("login"), "Fail, NOT on the Login page");
-            WebUI.assertEquals(WebUI.getTextElement(alertMessage), "Invalid login credentials", "Content of alert message not match");
-            WebUI.sleep(2);
+      public boolean isLoginPageUrl() {
+            return DriverManager.getDriver().getCurrentUrl().contains("login");
+      }
+
+      public boolean isAlertMessageDisplayed() {
+            return WebUI.checkElementDisplayed(alertMessage);
+      }
+
+      public String getAlertMessageText() {
+            return WebUI.getTextElement(alertMessage);
       }
 }
