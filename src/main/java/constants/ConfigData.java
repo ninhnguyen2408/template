@@ -8,7 +8,7 @@ public class ConfigData {
             PropertiesHelper.loadAllFiles();
       }
 
-      public static String URL = PropertiesHelper.getValue("URL");
-      public static String Email = PropertiesHelper.getValue("EMAIL");
-      public static String Password = PropertiesHelper.getValue("PASSWORD");
+      public static final String URL = PropertiesHelper.getValue("URL");
+      public static final String EMAIL = PropertiesHelper.getValue("EMAIL");
+      public static final String PASSWORD = PropertiesHelper.getValue("PASSWORD");
 }

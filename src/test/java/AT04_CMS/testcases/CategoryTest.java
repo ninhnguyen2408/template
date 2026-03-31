@@ -14,7 +14,6 @@ public class CategoryTest extends BaseTest {
       LoginPage loginPage;
       DashboardPage dashboardPage;
       CategoryPage categoryPage = new CategoryPage();
-      ;
       ExcelHelper excelHelper = new ExcelHelper();
 
       private void navigate() {
@@ -65,6 +64,6 @@ public class CategoryTest extends BaseTest {
             navigate();
             excelHelper.setExcelFile(PropertiesHelper.getValue("EXCEL_PATH"), "CategoryData");
             categoryPage.searchCategoryName(excelHelper.getCellData(2, 10));
-            categoryPage.Pagination(excelHelper.getCellData(2, 10));
+            categoryPage.pagination(excelHelper.getCellData(2, 10));
       }
 }

@@ -13,22 +13,14 @@ import org.testng.Assert;
 import reports.ExtentTestManager;
 import utils.LogUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
 public class WebUI {
-      private static int Timeout = 20;
-      private static double ThreadSleep = 0.5;
-      private static int PageLoadTimeout = 30;
+      private static final int TIMEOUT = 20;
 
       // Log console
       public static void logConsole(Object message) {
@@ -72,11 +64,11 @@ public class WebUI {
       // Check element exist
       public static boolean checkElementExist(By by) {
             List<WebElement> listElement = getWebElements(by);
-            if (listElement.size() > 0) {
-                  System.out.println("Element " + by + "exist");
+            if (!listElement.isEmpty()) {
+                  System.out.println("Element " + by + " exists");
                   return true;
             } else {
-                  System.out.println("Element " + by + "NOT exist");
+                  System.out.println("Element " + by + " NOT exists");
                   return false;
             }
       }
@@ -84,15 +76,13 @@ public class WebUI {
       // Check element Displayed
       public static boolean checkElementDisplayed(By by) {
             waitForElementVisible(by);
-            boolean check = getWebElement(by).isDisplayed();
-            return check;
+            return getWebElement(by).isDisplayed();
       }
 
       // Check element Enable
       public static boolean checkElementEnable(By by) {
             waitForElementVisible(by);
-            boolean check = getWebElement(by).isEnabled();
-            return check;
+            return getWebElement(by).isEnabled();
       }
 
       // Check search table by column (xử lý cột trên 1 trang)
@@ -192,8 +182,7 @@ public class WebUI {
       public static boolean verifyEquals(Object actual, Object expected) {
             waitForPageLoaded();
             logConsole("Verify equals: " + actual + " and " + expected);
-            boolean check = actual.equals(expected);
-            return check;
+            return actual.equals(expected);
       }
 
       // Assert Equals
@@ -209,8 +198,7 @@ public class WebUI {
       public static boolean verifyContains(String actual, String expected) {
             waitForPageLoaded();
             logConsole("Verify contains " + actual + " and " + expected);
-            boolean check = actual.contains(expected);
-            return check;
+            return actual.contains(expected);
       }
 
       // Assert Contains
@@ -329,10 +317,10 @@ public class WebUI {
       // getText alert
       @Step("Get text on Alert")
       public static String getTextAlert() {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(Timeout));
+            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(TIMEOUT));
             wait.until(ExpectedConditions.alertIsPresent());
             String text = DriverManager.getDriver().switchTo().alert().getText();
-            LogUtils.info("Get text ion alert: " + text);
+            LogUtils.info("Get text on alert: " + text);
             return text;
       }
 
@@ -341,7 +329,7 @@ public class WebUI {
       // cuộn chuột đến vị trí element (đối tượng By)
       public static void scrollToElement(By by) {
             JavascriptExecutor js = (JavascriptExecutor) DriverManager.getDriver();
-            js.executeScript("arguments[0].scrollIntoView(true);", by);
+            js.executeScript("arguments[0].scrollIntoView(true);", getWebElement(by));
       }
 
       // cuộn chuột đến vị trí element (đối tượng WebElement)
@@ -410,7 +398,7 @@ public class WebUI {
       }
 
       // nhấn phím ENTER
-      public static boolean pressENTER() {
+      public static boolean pressEnter() {
             try {
                   Robot robot = new Robot();
                   robot.keyPress(KeyEvent.VK_ENTER);
@@ -422,7 +410,7 @@ public class WebUI {
       }
 
       // Nhấn phím ESC
-      public static boolean pressESC() {
+      public static boolean pressEsc() {
             try {
                   Robot robot = new Robot();
                   robot.keyPress(KeyEvent.VK_ESCAPE);
@@ -460,7 +448,7 @@ public class WebUI {
       // visibilityOfElementLocated
       public static void waitForElementVisible(By by) {
             try {
-                  WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(Timeout),
+                  WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(TIMEOUT),
                               Duration.ofMillis(500));
                   wait.until(ExpectedConditions.visibilityOfElementLocated(by));
             } catch (Throwable error) {
@@ -484,12 +472,12 @@ public class WebUI {
       // Wait for elementToBeClickable
       public static void waitForElementClickable(By by) {
             try {
-                  WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(Timeout),
+                  WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(TIMEOUT),
                               Duration.ofMillis(500));
                   wait.until(ExpectedConditions.elementToBeClickable(by));
             } catch (Throwable error) {
-                  LogUtils.error("Timeout waiting for the element Clickable" + by.toString());
-                  Assert.fail("Timeout waiting for the element Clickable" + by.toString());
+                  LogUtils.error("Timeout waiting for the element Clickable " + by.toString());
+                  Assert.fail("Timeout waiting for the element Clickable " + by.toString());
             }
       }
 
@@ -508,12 +496,12 @@ public class WebUI {
       // presenceOfElementLocated
       public static void waitForElementPresent(By by) {
             try {
-                  WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(Timeout),
+                  WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(TIMEOUT),
                               Duration.ofMillis(500));
                   wait.until(ExpectedConditions.presenceOfElementLocated(by));
             } catch (Throwable error) {
-                  LogUtils.error("Element not exits " + by.toString());
-                  Assert.fail("Element not exits " + by.toString());
+                  LogUtils.error("Element not exists " + by.toString());
+                  Assert.fail("Element not exists " + by.toString());
             }
       }
 
@@ -531,7 +519,7 @@ public class WebUI {
 
       // Wait For Page Loaded: chờ trang load xong mới thao tác
       public static void waitForPageLoaded() {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(Timeout),
+            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(TIMEOUT),
                         Duration.ofMillis(500));
             JavascriptExecutor js = (JavascriptExecutor) DriverManager.getDriver();
             // Wait for Javascript to load
@@ -565,27 +553,4 @@ public class WebUI {
             }
       }
 
-      // chụp màn hình
-      public static void captureScreenImage(String imageName) {
-            Robot robot = null;
-            try {
-                  robot = new Robot();
-            } catch (AWTException e) {
-                  throw new RuntimeException(e);
-            }
-            // Get size screen browser
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            System.out.println(screenSize);
-            // Khởi tạo kích thước khung hình với kích cỡ trên
-            Rectangle screenRectangle = new Rectangle(screenSize);
-            // Tạo hình chụp với độ lớn khung đã tạo trên
-            BufferedImage image = robot.createScreenCapture(screenRectangle);
-            // Lưu hình vào dạng file với dạng png
-            File file = new File("src/test/resources/screenshots/" + imageName + ".png");
-            try {
-                  ImageIO.write(image, "png", file);
-            } catch (IOException e) {
-                  throw new RuntimeException(e);
-            }
-      }
 }

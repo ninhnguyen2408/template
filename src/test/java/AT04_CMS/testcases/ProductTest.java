@@ -80,7 +80,7 @@ public class ProductTest extends BaseTest {
 
             System.out.println("\n ------\uD83E\uDDFE Check data table ⏩ ------ ");
             productPage.searchProduct(excelHelper.getCellData(2, 10));
-            productPage.Pagination(excelHelper.getCellData(2, 10));
+            productPage.pagination(excelHelper.getCellData(2, 10));
       }
 
 }

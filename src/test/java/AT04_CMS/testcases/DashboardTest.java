@@ -46,7 +46,7 @@ public class DashboardTest extends BaseTest {
             loginPage.loginCMS();
 
             dashboardPage = new DashboardPage();
-            dashboardPage.Logout();
+            dashboardPage.logout();
       }
 
 }

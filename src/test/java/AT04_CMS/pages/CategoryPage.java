@@ -158,7 +158,7 @@ public class CategoryPage {
 
       private By listPage = By.xpath("//a[@class='page-link']");
 
-      public void Pagination(String value) {
+      public void pagination(String value) {
             // Lấy tổng số page
             WebUI.waitForPageLoaded();
             int getListPage = WebUI.getWebElements(listPage).size();
