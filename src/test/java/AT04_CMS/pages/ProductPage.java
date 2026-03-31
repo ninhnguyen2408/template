@@ -277,7 +277,7 @@ public class ProductPage {
       private By listPage = By.xpath("//a[@class='page-link']");
 
       // Xử lý phân trang
-      public void Pagination(String value) {
+      public void pagination(String value) {
             // Lấy tổng số page
             int getListPage = WebUI.getWebElements(listPage).size();
             WebUI.sleep(2);

@@ -85,13 +85,13 @@ public class BrandPage {
             setTextAndKeysENTER(inputSearchBrand, excelHelper.getCellData(2, 5));
             waitForPageLoaded();
             clickElement(deleteBrand);
-            verifyDeteleConfirmation();
+            verifyDeleteConfirmation();
             clickElement(buttonDelete);
             sleep(2);
             assertEquals(getTextElement(alertMessage), excelHelper.getCellData(6, 6), "Content of alert message delete sucessful NOT match");
       }
 
-      private void verifyDeteleConfirmation() {
+      private void verifyDeleteConfirmation() {
             checkElementDisplayed(headerDeleteForm);
             sleep(2);
             assertEquals(getTextElement(confirmMessage), excelHelper.getCellData(6, 5), "Content of confirm message delete NOT match");

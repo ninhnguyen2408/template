@@ -13,14 +13,14 @@ public class LoginPage {
       private By buttonLogin = By.xpath("//button[normalize-space()='Login']");
       private By alertMessage = By.xpath("//div[@role='alert']");
 
-      private void getBrowser() {
+      private void navigateToLoginPage() {
             WebUI.openURL(ConfigData.URL);
             WebUI.waitForPageLoaded();
             WebUI.assertEquals(WebUI.getTextElement(headerPage), "Login to your account.", "NOT the Login page");
       }
 
       public DashboardPage loginCMS(String email, String password) {
-            getBrowser();
+            navigateToLoginPage();
             WebUI.sendKeys(inputEmail, email);
             WebUI.sendKeys(inputPassword, password);
             WebUI.clickElement(buttonLogin);
@@ -29,9 +29,9 @@ public class LoginPage {
       }
 
       public DashboardPage loginCMS() {
-            getBrowser();
-            WebUI.sendKeys(inputEmail, ConfigData.Email);
-            WebUI.sendKeys(inputPassword, ConfigData.Password);
+            navigateToLoginPage();
+            WebUI.sendKeys(inputEmail, ConfigData.EMAIL);
+            WebUI.sendKeys(inputPassword, ConfigData.PASSWORD);
             WebUI.clickElement(buttonLogin);
             WebUI.waitForPageLoaded();
             return new DashboardPage();

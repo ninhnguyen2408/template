@@ -37,7 +37,7 @@ public class DashboardPage {
             return new CategoryPage();
       }
 
-      public LoginPage Logout() {
+      public LoginPage logout() {
             verifyDashboardPage();
             WebUI.clickElement(menuAccount);
             WebUI.clickElement(optionLogout);
